@@ -32,7 +32,7 @@ R_MULTIPLE: float = 1.6            # reward:risk per winning trade
 HIT_RATE: float = 0.4             # probability of a win (0–1)
 TRADES_PER_PATH: int = 500         # trades in each simulated path
 RISK_FRACTION_PER_TRADE: float = 0.01  # fraction of current equity risked per trade
-NUM_SIMULATIONS: int = 2000        # number of Monte Carlo paths (simultaneous equity paths)
+NUM_SIMULATIONS: int = 5000        # number of Monte Carlo paths (simultaneous equity paths)
 RNG_SEED: int = 42                 # RNG seed for reproducibility
 
 
