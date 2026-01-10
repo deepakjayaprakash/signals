@@ -510,6 +510,114 @@ stop
 * Strategy iteration over automation
 
 # LLD
+Packages structure
+- Clients
+  - Interface for common methods like get OHLCV 
+  - Client factory: checks configuration and gives right impl for client
+- Individual implementation of interface
+- Models
+  - Data models for OHLCV client agnostic  
+- Configuration
+  - Which client to use for data fetch
+  - path to ohlcv data which is outside this repo
+  - schemas: schema for ohlcv data and maybe for other tables of sqlite
+- Commons
+  - Logging
+  - Date time utils
+  - Http client
+  - DB client for both sqlite and DuckDB
+
+- Repository
+  - OHLCV raw data repository : interface and DuckDB impl
+  - OHLCV clean processed data repository: interface and DuckDB impl
+  - Signals repository :interface and SqliteDB impl
+  - Paper trades :interface and SqliteDB impl
+- Ingestion
+  - Backfill job
+  - Index backfill job: 
+    - queries data for index symbols to backfill for
+    - API calls, fetch and parse responses
+    - Re write parquet files: can affect as many files as there are months
+- Symbol backfill job
+    - queries data for stock symbols to backfill for
+    - API calls, fetch and parse responses
+    - Re write parquet files: can affect as many files as there are months
+- Daily refresh job
+  - queries data for stock symbols to backfill for
+  - API calls, fetch and parse responses
+  - Re write parquet files : should affect only 1 file each
+- Feature Engineering
+  - Empty for now
+- Backtester Engine
+  - Start with Custom scripts
+  - Data Fetcher class -> repository fetches data
+  - Strategy Script -> runs and produces output
+  - Store output in signals table -> signals repo -> store
+
+
+
+- Signals UI
+  - Dashboard
+    - For some indices, always show, last 1 week, last 1 month, last 6 months, last 1 year returns, 
+  - Query filters
+    - Given symbol, date range, give returns, highest, lowest, drawdown since its peak
+
+## Schema Design
+
+OHLCV Data
+Columns
+- date
+- open
+- close
+- high
+- low
+- volume
+
+### Structure of parquet
+signals_data/
+  └── raw/
+      └── ohlc_1d/
+            └── symbol=RELIANCE/
+                └── year=2024/
+                    └── month=01/
+                        └── data.parquet
+
+
+## Libraries used
+
+- PyArrow: How data is stored & moved efficiently
+  - PyArrow is Python bindings for Apache Arrow, a columnar in-memory + on-disk data format
+  - The low-level engine behind Parquet, DuckDB, Spark, Polars.
+  - Columnar memory layout, Typed, language-agnostic data, Efficient disk format (Parquet)
+
+```
+API JSON
+   ↓
+Domain Objects
+   ↓
+pandas DataFrame (optional)
+   ↓
+PyArrow Table  ← schema enforcement happens here
+   ↓
+Parquet files
+
+```  
+- Pydantic: How data is validated & trusted
+  - Pydantic is a data validation & parsing library built on Python type hints.
+  - Runtime type safety for Python.
+  - Explicit data models, Automatic validation
+
+```
+External Input
+(API / YAML / JSON)
+        ↓
+Pydantic Model   ← validation boundary
+        ↓
+Trusted Domain Objects
+        ↓
+Rest of system
+```
+
 
 ## StrategyExecutorFactory
 
