@@ -28,3 +28,14 @@
    python3 -m pip install -r requirements.txt
    confirm using pip list
    ```
+
+5. Creating Parquet files
+   - Data is present in signals_data which is outside this repo and resides inside this repo's parent directory 
+   - python Run create_dummy_data.py
+
+6. Creating sqlite datbase
+   - Open DB Browser extension
+   - Create DB inside signals_data/sqlite_db/
+   - Give it name as sqlite_data.db
+   - To create tables: sqlite3 ../signals_data/sqlite_db/signals.db < scripts/schema.sql
+   - OR in DB Browser: File -> Open SQL -> Execute SQL

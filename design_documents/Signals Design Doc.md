@@ -582,6 +582,9 @@ signals_data/
                     └── month=01/
                         └── data.parquet
 
+### SqliteDB 
+
+### Table: 
 
 ## Libraries used
 
